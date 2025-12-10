@@ -301,6 +301,12 @@ function cwebpr() {
 # Add Laravel completion if available
 # _sf_laravel function omitted for brevity but can be re-added if widely used
 
+function ag() {
+    log_info "Opening with Antigravity..."
+    antigravity .
+    check_status "Opened." "Failed."
+}
+
 export SDKMAN_DIR="$HOME/.sdkman"
 [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
 
