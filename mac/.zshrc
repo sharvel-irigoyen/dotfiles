@@ -10,7 +10,9 @@ fi
 export CLICOLOR=1
 export LSCOLORS=GxFxCxDxBxegedabagaced
 
-# Basic prompt if oh-my-posh is not present
-if ! command -v oh-my-posh &> /dev/null; then
+# Oh-My-Posh
+if command -v oh-my-posh &> /dev/null; then
+    eval "$(oh-my-posh init zsh --config $HOME/dotfiles/themes/easy-term.omp.json)"
+else
     PROMPT='%F{cyan}%n@%m%f:%F{blue}%~%f$ '
 fi

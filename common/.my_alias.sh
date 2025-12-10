@@ -66,7 +66,7 @@ export NVM_DIR="$HOME/.nvm"
 export PATH=$PATH:/home/sharvel/.local/bin
 
 if command -v oh-my-posh &> /dev/null; then
-    eval "$(oh-my-posh init bash --config /mnt/c/Users/sharv/easy-term.omp.json)"
+    eval "$(oh-my-posh init bash --config $HOME/dotfiles/themes/easy-term.omp.json)"
 fi
 
 # ==============================================================================

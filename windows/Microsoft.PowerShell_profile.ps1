@@ -292,8 +292,15 @@ function agenteprod { ssh -tt root@192.241.175.109 }
 # --- Extras ---
 
 # Enable Oh-My-Posh if available
-# if (Get-Command oh-my-posh -ErrorAction SilentlyContinue) {
-#    oh-my-posh init pwsh --config "$env:POSH_THEMES_PATH\janover.omp.json" | Invoke-Expression
-# }
+if (Get-Command oh-my-posh -ErrorAction SilentlyContinue) {
+    # Dynamically find the dotfiles directory relative to the profile or $HOME
+    $ThemePath = "$HOME\dotfiles\themes\easy-term.omp.json"
+    if (Test-Path $ThemePath) {
+        oh-my-posh init pwsh --config "$ThemePath" | Invoke-Expression
+    } else {
+        # Fallback if mapped drive or different path structure
+        oh-my-posh init pwsh | Invoke-Expression
+    }
+}
 
 Show-Success "Dotfiles Profile Loaded."
