@@ -26,6 +26,21 @@ if (!(Get-Command oh-my-posh -ErrorAction SilentlyContinue)) {
     Write-Host "$eSuccess Oh-My-Posh ya está instalado." -ForegroundColor Green
 }
 
+# PowerShell Core (Upgrade if < 7)
+Write-Host "Verificando versión de PowerShell..." -ForegroundColor Cyan
+if ($PSVersionTable.PSVersion.Major -lt 7) {
+    Write-Host "$eWarning Estás usando PowerShell 5 (Legacy). Instalando PowerShell 7..." -ForegroundColor Yellow
+    try {
+        winget install Microsoft.PowerShell --source winget
+        Write-Host "$eSuccess PowerShell 7 instalado/actualizado." -ForegroundColor Green
+        Write-Host "$eInfo    IMPORTANTE: Deberás abrir 'PowerShell 7' (pwsh) en lugar de 'Windows PowerShell' para ver los cambios." -ForegroundColor Cyan
+    } catch {
+        Write-Host "$eError Error actualizando PowerShell. Intenta: winget install Microsoft.PowerShell" -ForegroundColor Red
+    }
+} else {
+    Write-Host "$eSuccess Usando PowerShell Moderno (v$($PSVersionTable.PSVersion.ToString())). Genial!" -ForegroundColor Green
+}
+
 # PSReadLine (Update to fix OMP errors)
 Write-Host "Verificando PSReadLine..." -ForegroundColor Cyan
 try {
