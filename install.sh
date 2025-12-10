@@ -5,6 +5,27 @@ OS="$(uname -s)" # Detecta el Sistema Operativo (Linux o Darwin para Mac)
 
 echo "🖥️  Detectando sistema: $OS"
 
+# --- 0. Dependencias (Oh-My-Posh) ---
+if ! command -v oh-my-posh &> /dev/null; then
+    echo "⚠️  Oh-My-Posh no encontrado. Instalando..."
+    if [[ "$OS" == "Darwin" ]]; then
+        if command -v brew &> /dev/null; then
+            brew install jandedobbeleer/oh-my-posh/oh-my-posh
+        else
+            echo "❌ Homebrew no encontrado. Instala OMP manualmente."
+        fi
+    else
+        # Linux (Standard installer)
+        # Requires sudo usually for writing to /usr/local/bin, or install locally
+        echo "⬇️  Descargando instalador de Linux..."
+        sudo wget https://github.com/JanDeDobbeleer/oh-my-posh/releases/latest/download/posh-linux-amd64 -O /usr/local/bin/oh-my-posh
+        sudo chmod +x /usr/local/bin/oh-my-posh
+    fi
+    echo "✅ Oh-My-Posh instalado."
+else
+    echo "✅ Oh-My-Posh ya está instalado."
+fi
+
 # --- 1. Instalar lo COMÚN (Alias universales) ---
 echo "🔗 Enlazando configuraciones comunes..."
 ln -sf "$DOTFILES_DIR/common/.my_alias.sh" "$HOME/.my_alias.sh"
