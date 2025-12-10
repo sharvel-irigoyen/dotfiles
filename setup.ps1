@@ -37,14 +37,14 @@ if (Test-Path $SourceProfile) {
     # Opción B: Sourcear (Mejor para actualizaciones)
     # Escribe una línea en tu perfil real que llame al archivo del repo
     $ImportLine = ". $SourceProfile"
-    if (!(Select-String -Path $PROFILE -Pattern [regex]::Escape($ImportLine) -SimpleMatch -Quiet)) {
+    if (!(Select-String -Path $PROFILE -Pattern $ImportLine -SimpleMatch -Quiet)) {
         Add-Content -Path $PROFILE -Value $ImportLine -ErrorAction SilentlyContinue
         Write-Host "$eSuccess Perfil vinculado." -ForegroundColor Green
     } else {
         Write-Host "$eInfo  El perfil ya estaba vinculado." -ForegroundColor Cyan
     }
 
-    Write-Host "$eSuccess Configuración finalizada." -ForegroundColor Green
+    Write-Host "$eSuccess Configuracion finalizada." -ForegroundColor Green
 } else {
     Write-Host "$eWarning No se encontró el perfil en el repo." -ForegroundColor Yellow
 }
