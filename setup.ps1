@@ -5,18 +5,23 @@ $ProfileDir = Split-Path $PROFILE
 # Crear carpeta de perfil si no existe
 if (!(Test-Path $ProfileDir)) { New-Item -ItemType Directory -Path $ProfileDir }
 
+$eSuccess = [char]0x2705
+$eError = [char]0x274C
+$eInfo = "$([char]0x2139)$([char]0xFE0F)"
+$eWarning = "$([char]0x26A0)$([char]0xFE0F)"
+
 # 0. Instalar dependencias (Oh-My-Posh)
 Write-Host "Verificando dependencias..." -ForegroundColor Cyan
 if (!(Get-Command oh-my-posh -ErrorAction SilentlyContinue)) {
-    Write-Host "⚠️  Oh-My-Posh no encontrado. Instalando..." -ForegroundColor Yellow
+    Write-Host "$eWarning  Oh-My-Posh no encontrado. Instalando..." -ForegroundColor Yellow
     try {
         winget install JanDeDobbeleer.OhMyPosh --source winget
-        Write-Host "✅ Oh-My-Posh instalado. Por favor reinicia tu terminal al finalizar." -ForegroundColor Green
+        Write-Host "$eSuccess Oh-My-Posh instalado. Por favor reinicia tu terminal al finalizar." -ForegroundColor Green
     } catch {
-        Write-Host "❌ Error instalando Oh-My-Posh. Intenta manual: winget install JanDeDobbeleer.OhMyPosh" -ForegroundColor Red
+        Write-Host "$eError Error instalando Oh-My-Posh. Intenta manual: winget install JanDeDobbeleer.OhMyPosh" -ForegroundColor Red
     }
 } else {
-    Write-Host "✅ Oh-My-Posh ya está instalado." -ForegroundColor Green
+    Write-Host "$eSuccess Oh-My-Posh ya está instalado." -ForegroundColor Green
 }
 
 # 1. Enlazar el perfil de PowerShell
@@ -34,12 +39,12 @@ if (Test-Path $SourceProfile) {
     $ImportLine = ". $SourceProfile"
     if (!(Select-String -Path $PROFILE -Pattern [regex]::Escape($ImportLine) -SimpleMatch -Quiet)) {
         Add-Content -Path $PROFILE -Value $ImportLine -ErrorAction SilentlyContinue
-        Write-Host "✅ Perfil vinculado." -ForegroundColor Green
+        Write-Host "$eSuccess Perfil vinculado." -ForegroundColor Green
     } else {
-        Write-Host "ℹ️  El perfil ya estaba vinculado." -ForegroundColor Cyan
+        Write-Host "$eInfo  El perfil ya estaba vinculado." -ForegroundColor Cyan
     }
 
-    Write-Host "✅ Configuración finalizada." -ForegroundColor Green
+    Write-Host "$eSuccess Configuración finalizada." -ForegroundColor Green
 } else {
-    Write-Host "⚠️ No se encontró el perfil en el repo." -ForegroundColor Yellow
+    Write-Host "$eWarning No se encontró el perfil en el repo." -ForegroundColor Yellow
 }
