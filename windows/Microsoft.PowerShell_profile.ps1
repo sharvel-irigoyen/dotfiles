@@ -3,24 +3,29 @@
 
 # --- Helper Functions for UX ---
 
+$eSuccess = [char]0x2705
+$eError = [char]0x274C
+$eInfo = "$([char]0x2139)$([char]0xFE0F)"
+$eWarning = "$([char]0x26A0)$([char]0xFE0F)"
+
 function Show-Success {
     param ( [string]$Message )
-    Write-Host "✅  $Message" -ForegroundColor Green
+    Write-Host "$eSuccess  $Message" -ForegroundColor Green
 }
 
 function Show-Error {
     param ( [string]$Message )
-    Write-Host "❌  $Message" -ForegroundColor Red
+    Write-Host "$eError  $Message" -ForegroundColor Red
 }
 
 function Show-Info {
     param ( [string]$Message )
-    Write-Host "ℹ️   $Message" -ForegroundColor Cyan
+    Write-Host "$eInfo   $Message" -ForegroundColor Cyan
 }
 
 function Show-Warning {
     param ( [string]$Message )
-    Write-Host "⚠️   $Message" -ForegroundColor Yellow
+    Write-Host "$eWarning   $Message" -ForegroundColor Yellow
 }
 
 # --- Navigator & Config ---
