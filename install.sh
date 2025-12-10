@@ -1,0 +1,43 @@
+#!/bin/bash
+
+DOTFILES_DIR="$HOME/dotfiles"
+OS="$(uname -s)" # Detecta el Sistema Operativo (Linux o Darwin para Mac)
+
+echo "🖥️  Detectando sistema: $OS"
+
+# --- 1. Instalar lo COMÚN (Alias universales) ---
+echo "🔗 Enlazando configuraciones comunes..."
+ln -sf "$DOTFILES_DIR/common/.my_alias.sh" "$HOME/.my_alias.sh"
+
+# --- 2. Lógica para BASH (Linux / WSL) ---
+if [ "$SHELL" == "/bin/bash" ] || [ -f "/bin/bash" ]; then
+    echo "🐚 Configurando Bash..."
+    # Si quieres reemplazar el .bashrc completo:
+    # ln -sf "$DOTFILES_DIR/bash/.bashrc" "$HOME/.bashrc"
+
+    # O si prefieres solo inyectar la carga (más seguro):
+    if ! grep -q ".my_alias.sh" "$HOME/.bashrc"; then
+        echo "source $HOME/.my_alias.sh" >> "$HOME/.bashrc"
+    fi
+fi
+
+# --- 3. Lógica para ZSH (MacOS / Linux avanzado) ---
+# MacOS usa Zsh por defecto ahora
+if [[ "$OS" == "Darwin" ]] || [[ "$SHELL" == */zsh ]]; then
+    echo "🍏 Configurando Zsh (Mac/Linux)..."
+
+    # Enlazar .zshrc si tienes uno personalizado en tu repo
+    if [ -f "$DOTFILES_DIR/zsh/.zshrc" ]; then
+        ln -sf "$DOTFILES_DIR/zsh/.zshrc" "$HOME/.zshrc"
+    fi
+
+    # Asegurarnos de que Zsh también cargue tus alias comunes
+    # Nota: Zsh también entiende la sintaxis de tus alias de Bash el 99% de las veces
+    if [ -f "$HOME/.zshrc" ]; then
+        if ! grep -q ".my_alias.sh" "$HOME/.zshrc"; then
+             echo "source $HOME/.my_alias.sh" >> "$HOME/.zshrc"
+        fi
+    fi
+fi
+
+echo "✅ ¡Instalación finalizada!"
