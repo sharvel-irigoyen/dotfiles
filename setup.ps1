@@ -10,8 +10,10 @@ $eError = [char]0x274C
 $eInfo = "$([char]0x2139)$([char]0xFE0F)"
 $eWarning = "$([char]0x26A0)$([char]0xFE0F)"
 
-# 0. Instalar dependencias (Oh-My-Posh)
+# 0. Instalar dependencias
 Write-Host "Verificando dependencias..." -ForegroundColor Cyan
+
+# Oh-My-Posh
 if (!(Get-Command oh-my-posh -ErrorAction SilentlyContinue)) {
     Write-Host "$eWarning  Oh-My-Posh no encontrado. Instalando..." -ForegroundColor Yellow
     try {
@@ -24,6 +26,16 @@ if (!(Get-Command oh-my-posh -ErrorAction SilentlyContinue)) {
     Write-Host "$eSuccess Oh-My-Posh ya está instalado." -ForegroundColor Green
 }
 
+# PSReadLine (Update to fix OMP errors)
+Write-Host "Verificando PSReadLine..." -ForegroundColor Cyan
+try {
+    # Check version or just force install/update for CurrentUser
+    Install-Module PSReadLine -Scope CurrentUser -Force -SkipPublisherCheck -AllowPrerelease -ErrorAction Stop
+    Write-Host "$eSuccess PSReadLine actualizado." -ForegroundColor Green
+} catch {
+    Write-Host "$eWarning No se pudo actualizar PSReadLine. Si ves errores de 'KeyHandler', intenta ejecutar como Admin: Install-Module PSReadLine -Force" -ForegroundColor Yellow
+}
+
 # 1. Enlazar el perfil de PowerShell
 # En Windows usamos HardLinks o copiamos, los symlinks a veces requieren permisos de admin
 Write-Host "Configurando perfil de PowerShell..." -ForegroundColor Cyan
@@ -31,20 +43,24 @@ Write-Host "Configurando perfil de PowerShell..." -ForegroundColor Cyan
 $SourceProfile = "$DotfilesDir\windows\Microsoft.PowerShell_profile.ps1"
 
 if (Test-Path $SourceProfile) {
-    # Opción A: Copiar (Más seguro en Windows)
-    Copy-Item -Path $SourceProfile -Destination $PROFILE -Force
+    # Reescribir el perfil para evitar duplicados y conflictos
+    # Opción Única: Sourcear (Mejor para actualizaciones)
+    $ImportLine = ". '$SourceProfile'"
 
-    # Opción B: Sourcear (Mejor para actualizaciones)
-    # Escribe una línea en tu perfil real que llame al archivo del repo
-    $ImportLine = ". $SourceProfile"
-    if (!(Select-String -Path $PROFILE -Pattern $ImportLine -SimpleMatch -Quiet)) {
-        Add-Content -Path $PROFILE -Value $ImportLine -ErrorAction SilentlyContinue
-        Write-Host "$eSuccess Perfil vinculado." -ForegroundColor Green
-    } else {
-        Write-Host "$eInfo  El perfil ya estaba vinculado." -ForegroundColor Cyan
+    # Crear backup si existe y no es solo nuestro link
+    if (Test-Path $PROFILE) {
+        $Content = Get-Content $PROFILE -Raw
+        if ($Content -notmatch "Microsoft.PowerShell_profile.ps1") {
+            Copy-Item $PROFILE "$PROFILE.bak" -Force
+            Write-Host "$eInfo  Backup creado en $PROFILE.bak" -ForegroundColor Cyan
+        }
     }
 
-    Write-Host "$eSuccess Configuracion finalizada." -ForegroundColor Green
+    # Sobreescribir con el link limpio
+    Set-Content -Path $PROFILE -Value $ImportLine -Force
+    Write-Host "$eSuccess Perfil vinculado correctamente." -ForegroundColor Green
+
+    Write-Host "$eSuccess Configuración finalizada." -ForegroundColor Green
 } else {
     Write-Host "$eWarning No se encontró el perfil en el repo." -ForegroundColor Yellow
 }
