@@ -295,12 +295,20 @@ function agenteprod { ssh -tt root@192.241.175.109 }
 if (Get-Command oh-my-posh -ErrorAction SilentlyContinue) {
     # Dynamically find the dotfiles directory relative to the profile or $HOME
     $ThemePath = "$HOME\dotfiles\themes\easy-term.omp.json"
+
+    # Debugging Output
+    # Write-Host "DEBUG: Checking OMP Theme at: $ThemePath" -ForegroundColor DarkGray
+
     if (Test-Path $ThemePath) {
         oh-my-posh init pwsh --config "$ThemePath" | Invoke-Expression
     } else {
-        # Fallback if mapped drive or different path structure
+        Show-Warning "Oh-My-Posh found, but theme not found at: $ThemePath"
+        Show-Info "Falling back to default theme..."
         oh-my-posh init pwsh | Invoke-Expression
     }
+} else {
+    Show-Warning "Oh-My-Posh executable not found in PATH."
+    Show-Info "Install it via: winget install JanDeDobbeleer.OhMyPosh"
 }
 
 Show-Success "Dotfiles Profile Loaded."
