@@ -23,17 +23,17 @@ if (!(Get-Command oh-my-posh -ErrorAction SilentlyContinue)) {
         Write-Host "$eError Error instalando Oh-My-Posh. Intenta manual: winget install JanDeDobbeleer.OhMyPosh" -ForegroundColor Red
     }
 } else {
-    Write-Host "$eSuccess Oh-My-Posh ya está instalado." -ForegroundColor Green
+    Write-Host "$eSuccess Oh-My-Posh ya esta instalado." -ForegroundColor Green
 }
 
 # PowerShell Core (Upgrade if < 7)
-Write-Host "Verificando versión de PowerShell..." -ForegroundColor Cyan
+Write-Host "Verificando version de PowerShell..." -ForegroundColor Cyan
 if ($PSVersionTable.PSVersion.Major -lt 7) {
-    Write-Host "$eWarning Estás usando PowerShell 5 (Legacy). Instalando PowerShell 7..." -ForegroundColor Yellow
+    Write-Host "$eWarning Estas usando PowerShell 5 (Legacy). Instalando PowerShell 7..." -ForegroundColor Yellow
     try {
         winget install Microsoft.PowerShell --source winget
         Write-Host "$eSuccess PowerShell 7 instalado/actualizado." -ForegroundColor Green
-        Write-Host "$eInfo    IMPORTANTE: Deberás abrir 'PowerShell 7' (pwsh) en lugar de 'Windows PowerShell' para ver los cambios." -ForegroundColor Cyan
+        Write-Host "$eInfo    IMPORTANTE: Deberas abrir 'PowerShell 7' (pwsh) en lugar de 'Windows PowerShell' para ver los cambios." -ForegroundColor Cyan
     } catch {
         Write-Host "$eError Error actualizando PowerShell. Intenta: winget install Microsoft.PowerShell" -ForegroundColor Red
     }
@@ -59,7 +59,7 @@ $SourceProfile = "$DotfilesDir\windows\Microsoft.PowerShell_profile.ps1"
 
 if (Test-Path $SourceProfile) {
     # Reescribir el perfil para evitar duplicados y conflictos
-    # Opción Única: Sourcear (Mejor para actualizaciones)
+    # Opcion Unica: Sourcear (Mejor para actualizaciones)
     $ImportLine = ". '$SourceProfile'"
 
     # Crear backup si existe y no es solo nuestro link
@@ -75,7 +75,7 @@ if (Test-Path $SourceProfile) {
     Set-Content -Path $PROFILE -Value $ImportLine -Force
     Write-Host "$eSuccess Perfil vinculado correctamente." -ForegroundColor Green
 
-    Write-Host "$eSuccess Configuración finalizada." -ForegroundColor Green
+    Write-Host "$eSuccess Configuracion finalizada." -ForegroundColor Green
 } else {
-    Write-Host "$eWarning No se encontró el perfil en el repo." -ForegroundColor Yellow
+    Write-Host "$eWarning No se encontro el perfil en el repo." -ForegroundColor Yellow
 }
