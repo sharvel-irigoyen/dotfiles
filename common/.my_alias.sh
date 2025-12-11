@@ -303,7 +303,11 @@ function cwebpr() {
 
 function ag() {
     log_info "Opening with Antigravity..."
-    antigravity .
+    if [ -n "$WSL_DISTRO_NAME" ]; then
+        antigravity --remote "wsl+${WSL_DISTRO_NAME}" .
+    else
+        antigravity .
+    fi
     check_status "Opened." "Failed."
 }
 
